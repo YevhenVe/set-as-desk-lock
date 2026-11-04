@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Package xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+         xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+         xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+         xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
+         xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4"
+         xmlns:desktop5="http://schemas.microsoft.com/appx/manifest/desktop/windows10/5"
+         IgnorableNamespaces="uap rescap com desktop4 desktop5">
+  <Identity Name="SetDeskLock" Publisher="CN=SetDeskLock Local" Version="1.0.0.1" ProcessorArchitecture="neutral" />
+  <Properties>
+    <DisplayName>Set as Desktop &amp; Lock</DisplayName>
+    <PublisherDisplayName>SetDeskLock Local</PublisherDisplayName>
+    <Logo>assets\StoreLogo.png</Logo>
+  </Properties>
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.22000.0" MaxVersionTested="10.0.26300.0" />
+  </Dependencies>
+  <Resources>
+    <Resource Language="en-us" />
+  </Resources>
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+  <Applications>
+    <Application Id="SetDeskLock" Executable="SetDeskLock.exe" EntryPoint="Windows.FullTrustApplication">
+      <uap:VisualElements DisplayName="Set as Desktop &amp; Lock"
+                          Description="Sets an image as both the desktop background and the lock screen."
+                          BackgroundColor="transparent"
+                          Square150x150Logo="assets\Square150x150Logo.png"
+                          Square44x44Logo="assets\Square44x44Logo.png"
+                          AppListEntry="none" />
+      <Extensions>
+        <desktop4:Extension Category="windows.fileExplorerContextMenus">
+          <desktop4:FileExplorerContextMenus>
+            <desktop5:ItemType Type=".jpg"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
+            <desktop5:ItemType Type=".jpeg"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
+            <desktop5:ItemType Type=".jfif"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
+            <desktop5:ItemType Type=".png"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
+            <desktop5:ItemType Type=".bmp"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
+            <desktop5:ItemType Type=".webp"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
+            <desktop5:ItemType Type=".heic"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
+            <desktop5:ItemType Type=".tif"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
+            <desktop5:ItemType Type=".tiff"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
+          </desktop4:FileExplorerContextMenus>
+        </desktop4:Extension>
+        <com:Extension Category="windows.comServer">
+          <com:ComServer>
+            <com:ExeServer Executable="SetDeskLock.exe" Arguments="-Embedding" DisplayName="Set as Desktop &amp; Lock">
+              <com:Class Id="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" DisplayName="Set as Desktop &amp; Lock" />
+            </com:ExeServer>
+          </com:ComServer>
+        </com:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+</Package>
