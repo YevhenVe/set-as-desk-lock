@@ -7,11 +7,13 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using Microsoft.Win32;
 
 static class Setup
 {
-    const string Title = "Set as Desktop & Lock - Setup";
+    const string Title = "Set as Lock and Home - Setup";
     const string PackageName = "SetDeskLock";
+    const string SettingsKey = @"Software\SetDeskLock";
 
     [STAThread]
     static int Main()
@@ -26,7 +28,7 @@ static class Setup
             if (IsInstalled())
             {
                 DialogResult choice = MessageBox.Show(
-                    "Set as Desktop & Lock is already installed.\n\nYes - update it\nNo - remove it\nCancel - do nothing",
+                    "Set as Lock and Home is already installed.\n\nYes - update it\nNo - remove it\nCancel - do nothing",
                     Title, MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
                 if (choice == DialogResult.No)
                     return Remove(cer);
@@ -36,14 +38,17 @@ static class Setup
             else
             {
                 DialogResult choice = MessageBox.Show(
-                    "This adds \"Set as Desktop & Lock\" to the image context menu.\n\n" +
+                    "This adds \"Set as Lock and Home\" to the image context menu.\n\n" +
                     "The app is self-signed, so Windows will ask for administrator approval to trust its certificate " +
                     "on this PC. Continue only if you trust the person who sent you this file.",
                     Title, MessageBoxButtons.OKCancel, MessageBoxIcon.Information);
                 if (choice != DialogResult.OK)
                     return 0;
             }
-            return Install(msix, cer);
+            string language = ChooseLanguage();
+            if (language == null)
+                return 0;
+            return Install(msix, cer, language);
         }
         catch (Exception e)
         {
@@ -56,7 +61,7 @@ static class Setup
         }
     }
 
-    static int Install(string msix, string cer)
+    static int Install(string msix, string cer, string language)
     {
         string thumbprint = new X509Certificate2(cer).Thumbprint;
         if (!IsTrusted(thumbprint) && !RunCertutil("-addstore TrustedPeople \"" + cer + "\""))
@@ -66,11 +71,14 @@ static class Setup
         }
 
         string error;
-        if (!PowerShell("Add-AppxPackage -LiteralPath '" + msix.Replace("'", "''") + "' -ForceUpdateFromAnyVersion -ForceApplicationShutdown", out error))
+        if (!PowerShell("Add-AppxPackage -Path '" + msix.Replace("'", "''") + "' -ForceUpdateFromAnyVersion -ForceApplicationShutdown", out error))
         {
             Show("Installation failed:\n\n" + error, MessageBoxIcon.Error);
             return 1;
         }
+
+        using (RegistryKey settings = Registry.CurrentUser.CreateSubKey(SettingsKey))
+            settings.SetValue("Language", language);
 
         DialogResult restart = MessageBox.Show(
             "Installed.\n\nRestart Explorer now so the menu item appears? Open Explorer windows will close. " +
@@ -79,7 +87,7 @@ static class Setup
         if (restart == DialogResult.Yes)
             RestartExplorer();
 
-        Show("Right-click an image and open App extensions to find \"Set as Desktop & Lock\".\n\n" +
+        Show("Right-click an image and open App extensions to find \"Set as Lock and Home\".\n\n" +
              "To move it to the main menu, use Customize menu.", MessageBoxIcon.Information);
         return 0;
     }
@@ -93,6 +101,8 @@ static class Setup
             return 1;
         }
 
+        Registry.CurrentUser.DeleteSubKeyTree(SettingsKey, false);
+
         string thumbprint = new X509Certificate2(cer).Thumbprint;
         if (IsTrusted(thumbprint) && !RunCertutil("-delstore TrustedPeople " + thumbprint))
         {
@@ -103,6 +113,68 @@ static class Setup
 
         Show("Removed.", MessageBoxIcon.Information);
         return 0;
+    }
+
+    static string ChooseLanguage()
+    {
+        string[,] options = { { "EN", "English" }, { "UA", "Українська" }, { "RU", "Русский" } };
+        string current = SavedLanguage();
+
+        using (Form form = new Form())
+        {
+            form.Text = Title;
+            form.FormBorderStyle = FormBorderStyle.FixedDialog;
+            form.StartPosition = FormStartPosition.CenterScreen;
+            form.MaximizeBox = false;
+            form.MinimizeBox = false;
+            form.AutoSize = true;
+            form.AutoSizeMode = AutoSizeMode.GrowAndShrink;
+
+            FlowLayoutPanel panel = new FlowLayoutPanel();
+            panel.FlowDirection = FlowDirection.TopDown;
+            panel.AutoSize = true;
+            panel.Padding = new Padding(12);
+            form.Controls.Add(panel);
+
+            Label label = new Label();
+            label.Text = "Menu language / Мова меню / Язык меню";
+            label.AutoSize = true;
+            panel.Controls.Add(label);
+
+            RadioButton[] buttons = new RadioButton[options.GetLength(0)];
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                buttons[i] = new RadioButton();
+                buttons[i].Text = options[i, 1];
+                buttons[i].AutoSize = true;
+                buttons[i].Checked = options[i, 0] == current;
+                panel.Controls.Add(buttons[i]);
+            }
+
+            Button ok = new Button();
+            ok.Text = "OK";
+            ok.DialogResult = DialogResult.OK;
+            panel.Controls.Add(ok);
+            form.AcceptButton = ok;
+
+            if (form.ShowDialog() != DialogResult.OK)
+                return null;
+            for (int i = 0; i < buttons.Length; i++)
+            {
+                if (buttons[i].Checked)
+                    return options[i, 0];
+            }
+            return "EN";
+        }
+    }
+
+    static string SavedLanguage()
+    {
+        using (RegistryKey settings = Registry.CurrentUser.OpenSubKey(SettingsKey))
+        {
+            string saved = settings == null ? null : settings.GetValue("Language") as string;
+            return saved ?? "EN";
+        }
     }
 
     static string Extract(string name, string directory)

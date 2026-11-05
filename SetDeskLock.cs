@@ -10,7 +10,8 @@ using System.Windows.Forms;
 //   SetDeskLock.exe -Embedding     COM server that Explorer starts to show the menu item.
 static class Program
 {
-    public const string MenuTitle = "Set as Desktop & Lock";
+    const string AppName = "Set as Lock and Home";
+    const string SettingsKey = @"HKEY_CURRENT_USER\Software\SetDeskLock";
     const string CommandClsid = "7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93";
     const uint SPI_SETDESKWALLPAPER = 0x0014;
     const uint SPIF_UPDATEINIFILE = 0x01;
@@ -35,6 +36,16 @@ static class Program
         if (args.Length >= 1 && args[0].TrimStart('-', '/').Equals("Embedding", StringComparison.OrdinalIgnoreCase))
             return RunComServer();
         return ApplyImage(args);
+    }
+
+    public static string MenuTitle()
+    {
+        switch (Microsoft.Win32.Registry.GetValue(SettingsKey, "Language", null) as string)
+        {
+            case "UA": return "Встановити як шпалери всюди";
+            case "RU": return "Установить как обои везде";
+            default: return AppName;
+        }
     }
 
     public static void MarkUsed()
@@ -62,7 +73,7 @@ static class Program
     {
         if (args.Length != 1 || !File.Exists(args[0]))
         {
-            MessageBox.Show("Image file not found.", MenuTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+            MessageBox.Show("Image file not found.", AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
             return 1;
         }
 
@@ -76,7 +87,7 @@ static class Program
         string message = path;
         message += "\n\nDesktop: " + (desktopError ?? "OK");
         message += "\nLock screen: " + (lockError ?? "OK");
-        MessageBox.Show(message, MenuTitle, MessageBoxButtons.OK, MessageBoxIcon.Error);
+        MessageBox.Show(message, AppName, MessageBoxButtons.OK, MessageBoxIcon.Error);
         return 1;
     }
 
@@ -215,7 +226,7 @@ public sealed class SetDeskLockCommand : IExplorerCommand
     public int GetTitle(IShellItemArray items, out string title)
     {
         Program.MarkUsed();
-        title = Program.MenuTitle;
+        title = Program.MenuTitle();
         return S_OK;
     }
 

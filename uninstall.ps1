@@ -1,6 +1,7 @@
 $subject = 'CN=SetDeskLock Local'
 
 Get-AppxPackage -Name SetDeskLock | Remove-AppxPackage
+Remove-Item 'HKCU:\Software\SetDeskLock' -Recurse -ErrorAction SilentlyContinue
 Remove-Item 'HKCU:\Software\Classes\SystemFileAssociations\image\shell\SetDeskLock' -Recurse -ErrorAction SilentlyContinue
 
 $cert = Get-ChildItem Cert:\CurrentUser\My | Where-Object { $_.Subject -eq $subject } | Select-Object -First 1
