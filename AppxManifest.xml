@@ -5,12 +5,16 @@
          xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
          xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4"
          xmlns:desktop5="http://schemas.microsoft.com/appx/manifest/desktop/windows10/5"
-         IgnorableNamespaces="uap rescap com desktop4 desktop5">
+         xmlns:desktop6="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6"
+         IgnorableNamespaces="uap rescap com desktop4 desktop5 desktop6">
   <Identity Name="SetDeskLock" Publisher="CN=SetDeskLock Local" Version="1.0.0.1" ProcessorArchitecture="neutral" />
   <Properties>
     <DisplayName>Set as Lock and Home</DisplayName>
     <PublisherDisplayName>SetDeskLock Local</PublisherDisplayName>
     <Logo>assets\StoreLogo.png</Logo>
+    <!-- Wallpaper settings must reach the real user registry, not a private per-package copy. -->
+    <desktop6:RegistryWriteVirtualization>disabled</desktop6:RegistryWriteVirtualization>
+    <desktop6:FileSystemWriteVirtualization>disabled</desktop6:FileSystemWriteVirtualization>
   </Properties>
   <Dependencies>
     <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.22000.0" MaxVersionTested="10.0.26300.0" />
@@ -20,6 +24,7 @@
   </Resources>
   <Capabilities>
     <rescap:Capability Name="runFullTrust" />
+    <rescap:Capability Name="unvirtualizedResources" />
   </Capabilities>
   <Applications>
     <Application Id="SetDeskLock" Executable="SetDeskLock.exe" EntryPoint="Windows.FullTrustApplication">
