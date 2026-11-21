@@ -14,5 +14,7 @@ if (-not (Test-Path "Cert:\LocalMachine\TrustedPeople\$thumbprint")) {
 }
 
 Add-AppxPackage -Path $msix -ForceUpdateFromAnyVersion -ForceApplicationShutdown
+$family = (Get-AppxPackage -Name SetDeskLock).PackageFamilyName
+Start-Process "shell:AppsFolder\$family!SetDeskLock"
 Stop-Process -Name explorer -Force
 Write-Output 'Installed. Explorer was restarted.'

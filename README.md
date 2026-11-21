@@ -19,7 +19,11 @@ The app is signed with a self-signed certificate, so setup adds that certificate
 
 ## Use
 
-Right-click a `.jpg`, `.jpeg`, `.jfif`, `.png`, `.bmp`, `.webp`, `.heic`, `.tif`, or `.tiff` file and open **App extensions**, then choose the item. Its text is **Set as Lock and Home** in English, **Встановити як шпалери всюди** in Ukrainian, or **Установить как обои везде** in Russian. Use **Customize menu** to move it to the main menu. The item is hidden when several files are selected.
+Right-click a `.jpg`, `.jpeg`, `.jfif`, `.jpe`, `.png`, `.bmp`, `.gif`, `.webp`, `.heic`, `.heif`, `.avif`, `.tif`, or `.tiff` file and open **App extensions**, then choose the item. Its text is **Set as Lock and Home** in English, **Встановити як шпалери всюди** in Ukrainian, or **Установить как обои везде** in Russian. Use **Customize menu** to move it to the main menu. The item is hidden when several files are selected.
+
+Or select one of these images in File Explorer or on the desktop and press **Ctrl+B**. It works silently, like Windows' own shortcuts, and only there: Ctrl+B keeps its usual meaning in every other app and while you rename a file. A small background process starts at sign-in for this; turn it off in **Settings > Apps > Startup** if you don't want the shortcut.
+
+GIF files apply their first frame. HEIC and HEIF files need the HEIF Image Extensions from the Microsoft Store.
 
 ## Remove
 

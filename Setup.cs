@@ -80,6 +80,11 @@ static class Setup
         using (RegistryKey settings = Registry.CurrentUser.CreateSubKey(SettingsKey))
             settings.SetValue("Language", language);
 
+        // Windows starts the Ctrl+B hotkey at sign-in; start it now so it works right away.
+        string family;
+        if (PowerShell("(Get-AppxPackage -Name " + PackageName + ").PackageFamilyName", out family) && family.Length > 0)
+            Process.Start("explorer.exe", "shell:AppsFolder\\" + family + "!SetDeskLock");
+
         DialogResult restart = MessageBox.Show(
             "Installed.\n\nRestart Explorer now so the menu item appears? Open Explorer windows will close. " +
             "Choose No if files are being copied, and sign out or restart later.",
@@ -87,8 +92,9 @@ static class Setup
         if (restart == DialogResult.Yes)
             RestartExplorer();
 
-        Show("Right-click an image and open App extensions to find \"Set as Lock and Home\".\n\n" +
-             "To move it to the main menu, use Customize menu.", MessageBoxIcon.Information);
+        Show("Right-click an image and open App extensions to find \"Set as Lock and Home\". " +
+             "To move it to the main menu, use Customize menu.\n\n" +
+             "You can also select an image in File Explorer or on the desktop and press Ctrl+B.", MessageBoxIcon.Information);
         return 0;
     }
 

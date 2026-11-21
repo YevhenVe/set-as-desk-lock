@@ -3,10 +3,11 @@
          xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
          xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
          xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
+         xmlns:desktop="http://schemas.microsoft.com/appx/manifest/desktop/windows10"
          xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4"
          xmlns:desktop5="http://schemas.microsoft.com/appx/manifest/desktop/windows10/5"
          xmlns:desktop6="http://schemas.microsoft.com/appx/manifest/desktop/windows10/6"
-         IgnorableNamespaces="uap rescap com desktop4 desktop5 desktop6">
+         IgnorableNamespaces="uap rescap com desktop desktop4 desktop5 desktop6">
   <Identity Name="SetDeskLock" Publisher="CN=SetDeskLock Local" Version="1.0.0.1" ProcessorArchitecture="neutral" />
   <Properties>
     <DisplayName>Set as Lock and Home</DisplayName>
@@ -40,10 +41,14 @@
             <desktop5:ItemType Type=".jpg"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
             <desktop5:ItemType Type=".jpeg"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
             <desktop5:ItemType Type=".jfif"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
+            <desktop5:ItemType Type=".jpe"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
             <desktop5:ItemType Type=".png"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
             <desktop5:ItemType Type=".bmp"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
+            <desktop5:ItemType Type=".gif"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
             <desktop5:ItemType Type=".webp"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
             <desktop5:ItemType Type=".heic"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
+            <desktop5:ItemType Type=".heif"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
+            <desktop5:ItemType Type=".avif"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
             <desktop5:ItemType Type=".tif"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
             <desktop5:ItemType Type=".tiff"><desktop5:Verb Id="SetDeskLock" Clsid="7E3C2A14-9B6D-4F58-A1C7-2D84E6F05B93" /></desktop5:ItemType>
           </desktop4:FileExplorerContextMenus>
@@ -55,6 +60,9 @@
             </com:ExeServer>
           </com:ComServer>
         </com:Extension>
+        <desktop:Extension Category="windows.startupTask" Executable="SetDeskLock.exe" EntryPoint="Windows.FullTrustApplication">
+          <desktop:StartupTask TaskId="SetDeskLockHotkey" Enabled="true" DisplayName="Set as Lock and Home" />
+        </desktop:Extension>
       </Extensions>
     </Application>
   </Applications>
